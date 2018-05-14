@@ -1,0 +1,48 @@
+{
+  "name": "express-typescript-starter",
+  "version": "0.1.0",
+  "description": "A starting point for Node.js express apps with TypeScript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/TypeScript-Node-Starter"
+  },
+  "author": "Bowden Kelly",
+  "license": "MIT",
+  "scripts": {
+    "start": "npm run serve",
+    "build": "npm run build-sass && npm run build-ts && npm run tslint && npm run copy-static-assets",
+    "serve": "node dist/server.js",
+    "watch-node": "nodemon dist/server.js",
+    "watch2": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "test": "jest --forceExit --coverage --verbose",
+    "watch-test": "npm run test -- --watchAll",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
+    "build-sass": "node-sass src/public/css/main.scss dist/public/css/main.css",
+    "watch-sass": "node-sass -w src/public/css/main.scss dist/public/css/main.css",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "copy-static-assets": "ts-node copyStaticAssets.ts",
+    "debug": "npm run build && npm run watch-debug",
+    "serve-debug": "nodemon --inspect dist/server.js",
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run serve-debug\""
+  },
+  "dependencies": {
+    "typescript": "^2.8.3",
+    "winston": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^10.0.8",
+    "@types/winston": "^2.3.9",
+    "chai": "^4.1.2",
+    "concurrently": "^3.5.1",
+    "jest": "^22.4.3",
+    "node-sass": "4.7.2",
+    "nodemon": "^1.17.4",
+    "shelljs": "^0.8.2",
+    "supertest": "^3.0.0",
+    "ts-jest": "^22.4.6",
+    "ts-node": "^6.0.3",
+    "tslint": "^5.10.0"
+  }
+}
