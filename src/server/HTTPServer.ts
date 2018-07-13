@@ -1,7 +1,8 @@
-import http, {IncomingMessage, Server, ServerResponse} from 'http';
+import http, { IncomingMessage, Server, ServerResponse } from 'http';
 import winston from 'winston';
 
-import {IServer} from "./IServer";
+import { ServerOptions } from './ServerOptions';
+import { Logger } from "../logger/Logger";
 
 type RequestHandler = (request: IncomingMessage, response: ServerResponse) => void;
 type ServerListenOptions = {
@@ -9,10 +10,15 @@ type ServerListenOptions = {
 };
 
 
-export class HTTPServer implements IServer{
+export class HTTPServer implements ServerOptions {
 
     private baseURL: string;
     private server: Server;
+    protected logger: Logger;
+
+    constructor(logger?: Logger) {
+        this.logger = logger;
+    }
 
     public setBaseURL(url: string) {
         this.baseURL = url;

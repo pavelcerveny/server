@@ -1,0 +1,2 @@
+export const PATH_METADATA = "PATH_METADATA";
+export const RENDER_METADATA = "RENDER_METADATA ";
