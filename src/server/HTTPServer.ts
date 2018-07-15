@@ -1,8 +1,10 @@
+import http2 from 'http2';
 import http, { IncomingMessage, Server, ServerResponse } from 'http';
-import winston from 'winston';
-
+import Router from 'find-my-way';
 import { ServerOptions } from './ServerOptions';
 import { Logger } from "../logger/Logger";
+import { RouterInstance } from "../router/Router";
+
 
 type RequestHandler = (request: IncomingMessage, response: ServerResponse) => void;
 type ServerListenOptions = {
@@ -14,47 +16,39 @@ export class HTTPServer implements ServerOptions {
 
     private baseURL: string;
     private server: Server;
+    private port: number;
     protected logger: Logger;
+    public static running: boolean = false;
+    public router: RouterInstance;
 
-    constructor(logger?: Logger) {
+    constructor(opts: ServerListenOptions, logger: Logger, routes?: RequestHandler) {
+
+        let routing: RequestHandler;
+        if (!routes) {
+            this.router = Router();
+            routing = this.router.lookup.bind(this.router);
+        } else {
+            routing = routes;
+        }
+
+        this.server = http.createServer(routing);
         this.logger = logger;
+        this.port = opts.port;
+    }
+
+    public run() {
+
+        this.server.listen(this.port, (err: Error) => {
+            if (err) {
+                this.logger.error('Server Error' + err);
+            }
+
+            HTTPServer.running = true;
+            this.logger.info('Server Listening on port: ' + this.port);
+        });
     }
 
     public setBaseURL(url: string) {
         this.baseURL = url;
-    }
-
-    /**
-     *
-     * @param {RequestHandler} requestHandler contains Routes
-     * @param {ServerListenOptions} options
-     */
-    public start(options: ServerListenOptions, requestHandler?: RequestHandler) {
-
-        const defaultRequestHandler = (request: IncomingMessage, response: ServerResponse) => {
-            const { headers, method, url } = request;
-            if (method.toLowerCase() === 'get') {
-
-                response.statusCode = 200;
-                response.setHeader('Content-Type', 'application/json');
-
-                const responseBody = { headers, method, url };
-
-                response.write(JSON.stringify(responseBody));
-                response.end();
-            }
-        };
-
-        if (!requestHandler) {
-            requestHandler = defaultRequestHandler;
-        }
-
-        this.server = http.createServer(requestHandler);
-        this.server.listen(options, (err: Error) => {
-            if (err) {
-                winston.error('Server Error' + err);
-            }
-            winston.info('Server Listening on port: ' + options.port);
-        });
     }
 }

@@ -8,7 +8,7 @@ export default class HTTPServerFactory {
         const loggerInstance: Logger = createLogger({ name: 'winston'});
         if (type === 'http') {
             if (!https) {
-                return new HTTPServer(loggerInstance);
+                return new HTTPServer({ port: 3000 }, loggerInstance);
             }
         }
     }

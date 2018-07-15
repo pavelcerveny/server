@@ -4,11 +4,12 @@ declare module "find-my-way" {
     import * as http from 'http';
     import * as http2 from 'http2';
 
-    export function Router<
+    function Router<
         HttpServer extends (http.Server | http2.Http2Server) = http.Server,
         HttpRequest extends (http.IncomingMessage | http2.Http2ServerRequest) = http.IncomingMessage,
         HttpResponse extends (http.ServerResponse | http2.Http2ServerResponse) = http.ServerResponse
         >(opts?: RouterOptions): RouterInstance;
+
 
     interface RouterOptions<HttpRequest = http.IncomingMessage, HttpResponse = http.ServerResponse> {
         defaultRoute?(req: HttpRequest, res: HttpResponse): void;
@@ -29,6 +30,7 @@ declare module "find-my-way" {
         ): void;
     }
 
+
     interface RouterInstance<HttpRequest = http.IncomingMessage, HttpResponse = http.ServerResponse> {
         on(method: string, path: string, opts?: any, handler?: RouterOnHandler, store?: any): void;
         off(method: string, path: string): void;
@@ -48,5 +50,6 @@ declare module "find-my-way" {
         all(path: string, handler: RouterOnHandler, store?: any): void;
     }
 
+    export = Router;
 
 }
